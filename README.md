@@ -116,102 +116,100 @@ ROUND(
     2
 ) AS overtime_rate
 ```
+The age-band script uses `DATEDIFF(YEAR, date_of_birth, GETDATE())` to produce age categories. For age reporting tied to a specific year, completed age should be calculated at a fixed reference date and adjusted for birthdays not yet reached. Age bands describe workforce distribution; they do not predict individual retirement.
 
-## **7 | Power BI dashboard and reporting design** 
+### SQL techniques demonstrated
 
-The report uses three linked pages, with navigation and slicers to move from the overall workforce picture to absence and demographic analysis. DAX measures shown in the report definition include active headcount, overtime hours, overtime percentage, year-end headcount comparisons, sickness days lost, absence events, and demographic proportions. 
+| Technique | Application |
+| :--- | :--- |
+| INNER / LEFT JOIN | Combine workforce and absence facts with employee, organisation, department and reason dimensions. |
+| COUNT(DISTINCT), COUNT, SUM, AVG | Count records or people and aggregate days lost, hours and salary-related measures. |
+| WHERE and date boundaries | Focus calculations on 2024/25, sickness absence or specific workforce snapshots. |
+| CTEs and CASE | Structure calculations for age bands and opening/closing headcount. |
+| NULLIF, ROUND | Handle zero denominators and display readable percentage measures. |
+| RANK() OVER (PARTITION BY) | Rank departmental overtime rates separately within each organisation. |
 
-|**Page / visual**|**What it shows and why this format was chosen**|
-|---|---|
-|**Overview — KPI cards**|Active headcount, year-end comparison, overtime measures and related summary<br>figures provide an immediate view of workforce scale and movement.|
-|**Overview — line chart**|Active headcount over financial years makes the direction of workforce change easier to<br>see than individual annual totals.|
-|**Overview — bar charts**|Employees and overtime hours by department use ranked categorical comparisons;<br>longer labels are easier to read on horizontal bars.|
-|**Absence — KPI cards**|Absence events, days lost and the project’s estimated absence percentage separate<br>volume, duration and relative impact.|
-|**Absence — monthly line charts**|Absence events and WTE days lost over time highlight peaks, falls and possible seasonal<br>patterns.|
-|**Absence — column and bar charts**|Events by financial year, days lost by absence category and department expose<br>differences between groups.|
-|**Absence — 100% stacked bars**|Return-to-work interview status by department shows the proportion in each status<br>within each department, not just totals.|
-|**Diversity — KPI cards and 100% stacked bars**|Employee shares by gender allow composition to be understood at a glance.|
-|**Diversity — column/bar charts**|Age group by trust, disability status, ethnicity, qualifications and average salary by trust<br>support side-by-side comparisons.|
-|**Slicers and navigation**|Organisation, financial year, staff group, department, absence type, contract type,<br>gender, pay band and age group make the reports explorable.|
+## 7 | Power BI dashboard and reporting design
 
+The report uses three linked pages, with navigation and slicers to move from the overall workforce picture to absence and demographic analysis. DAX measures shown in the report definition include active headcount, overtime hours, overtime percentage, year-end headcount comparisons, sickness days lost, absence events, and demographic proportions.
 
+| Page / visual | What it shows and why this format was chosen |
+| :--- | :--- |
+| Overview — KPI cards | Active headcount, year-end comparison, overtime measures and related summary figures provide an immediate view of workforce scale and movement. |
+| Overview — line chart | Active headcount over financial years makes the direction of workforce change easier to see than individual annual totals. |
+| Overview — bar charts | Employees and overtime hours by department use ranked categorical comparisons; longer labels are easier to read on horizontal bars. |
+| Absence — KPI cards | Absence events, days lost and the project’s estimated absence percentage separate volume, duration and relative impact. |
+| Absence — monthly line charts | Absence events and WTE days lost over time highlight peaks, falls and possible seasonal patterns. |
+| Absence — column and bar charts | Events by financial year, days lost by absence category and department expose differences between groups. |
+| Absence — 100% stacked bars | Return-to-work interview status by department shows the proportion in each status within each department, not just totals. |
+| Diversity — KPI cards and 100% stacked bars | Employee shares by gender allow composition to be understood at a glance. |
+| Diversity — column/bar charts | Age group by trust, disability status, ethnicity, qualifications and average salary by trust support side-by-side comparisons. |
+| Slicers and navigation | Organisation, financial year, staff group, department, absence type, contract type, gender, pay band and age group make the reports explorable. |
 
-#### **Dashboard Design Overview:** 
+**Dashboard Design Overview:**
 
-1. KPI cards answer “how much?” 
+* KPI cards answer “how much?”
+* Trend lines answer “how has it changed?”
+* Bar charts answer “which group differs?”
+* 100% stacked bars answer “what proportion?”
+* Pages keep related questions together to avoid overcrowding a single view.
 
-2. Trend lines answer “how has it changed?” 
+## 8 | How the analysis answered business questions and supports decisions
 
-3. Bar charts answer “which group differs?” 
+| Business question | What the analysis established | Decision the analysis supports |
+| :--- | :--- | :--- |
+| Where is workforce capacity concentrated, and how is it changing? | Active headcount, staff-group and department breakdowns show how the workforce is distributed across organisations. Year-end headcount comparisons provide a view of workforce movement between reporting periods. | Identify areas for workforce-capacity review, investigate headcount changes and inform recruitment or resource-planning discussions. |
+| Which organisations or teams experience the greatest absence pressure? | Absence events and working days lost were analysed by organisation, department, staff group and reason. Monthly sickness trends distinguish the frequency of absence from the volume of working time lost. | Focus absence investigations on the teams and periods showing the greatest recorded impact, and assess whether further operational support is needed. |
+| Where is overtime most concentrated? | Overtime hours were compared with contracted hours to calculate overtime percentages by organisation and department. Departments were also ranked within each organisation, allowing like-for-like prioritisation within each trust. | Prioritise reviews of staffing cover, workload and rota arrangements in areas with relatively high overtime reliance. |
+| What do leaver and workforce age patterns indicate? | The analysis brings together distinct leaver counts, headcount snapshots, estimated attrition percentages and age-band distributions. This provides separate views of recorded staff departures and workforce age composition. | Support retention reviews and longer-term succession planning, while investigating underlying causes before drawing conclusions. |
+| How does workforce composition differ across groups? | Gender, ethnicity, disability, qualification and staff-group breakdowns describe workforce representation and show how the mix varies across reporting categories and organisations. | Inform workforce equality monitoring and identify differences that merit further investigation or more detailed analysis. |
+| How do pay and capacity profiles vary between organisations? | Average annual salary by trust is presented alongside workforce and demographic measures, enabling comparisons of reported pay levels and workforce composition. These figures are descriptive and do not cover role or grade mix. | Guide questions about workforce mix and pay distribution, and identify where including the grade mix would be useful before making decisions. |
 
-4. 100% stacked bars answer “what proportion?” 
+**Conclusion:** Overall, the analysis provides a consistent way to explore workforce questions using the same underlying reporting model. It supports investigation and management discussion; it does not, on its own, establish the causes of absence, overtime or staff departures.
 
-5. Pages keep related questions together to avoid overcrowding a single view. 
+## 9 | Data quality assurance and validation tests
 
-## **8 | How the analysis answered business questions and supports decisions** 
+The SQL script contains schema inspection, completeness and duplicate-record queries.
 
-|**Businessquestion**|**What the analysis established**<br>f|**Decision the analysis supports**|
-|---|---|---|
-|**Where is workforce capacity**<br>**concentrated, and how is it**<br>**changing?**|Active headcount, staff-group and department breakdowns<br>show how the workforce is distributed across<br>organisations. Year-end headcount comparisons provide a<br>view of workforce movement between reporting periods.|Identify areas for workforce-capacity<br>review, investigate headcount changes<br>and inform recruitment or resource-<br>planning discussions.|
-|**Which organisations or teams**|Absence events and workingdays lost were analysed by|Focus absence investigations on the|
+| Test | Method and link to the SQL file |
+| :--- | :--- |
+| Schema and field metadata | Used `INFORMATION_SCHEMA.COLUMNS` for table names, columns, types and nullability. |
+| Employee table completeness | Used `COUNT(*)`, `COUNT (DISTINCT employee_key)` and `SUM(CASE WHEN field IS NULL THEN 1 ELSE 0 END)` for identifiers, date of birth, gender and ethnicity. |
+| Cross-table missing values | Used CTE to combine `dim_employee` and `fact_workforce` counts with `UNION ALL`. |
+| Workforce row duplication | `GROUP BY employee_key HAVING COUNT(*) > 1` in `fact_workforce`. |
+| Unique absence events and leavers | Use `COUNT(DISTINCT absence_id)` for events and `COUNT(DISTINCT employee_key)` for leavers. |
+| Reporting period and calculation safety | Use `>= '2024-04-01' AND < '2025-04-01'` and `NULLIF(denominator,0)` for rates. |
 
+Example SQL check included in the project:
 
+```sql
+SELECT employee_key, COUNT(*) AS workforce_rows
+FROM fact_workforce
+GROUP BY employee_key
+HAVING COUNT(*) > 1;
 
-Healthcare workforce intelligence | Project portfolio 
+SELECT
+    COUNT(*) AS total_records,
+    COUNT(DISTINCT employee_key) AS unique_employees,
+    SUM(CASE WHEN employee_key IS NULL
+        THEN 1 ELSE 0 END) AS missing_employee_key,
+    SUM(CASE WHEN date_of_birth IS NULL
+        THEN 1 ELSE 0 END) AS missing_dob,
+    SUM(CASE WHEN gender IS NULL
+        THEN 1 ELSE 0 END) AS missing_gender,
+    SUM(CASE WHEN ethnic_category IS NULL
+        THEN 1 ELSE 0 END) AS missing_ethnicity
+FROM dim_employee;
+```
 
-|**Businessquestion**|**What the analysis established**<br>f|**Decision the analysis supports**|
-|---|---|---|
-|**experience the greatest**<br>**absence pressure?**|organisation, department, staff group and reason. Monthly<br>sickness trends distinguish the frequency of absence from<br>the volume of working time lost.|teams and periods showing the greatest<br>recorded impact, and assess whether<br>further operational support is needed.|
-|**Where is overtime most**<br>**concentrated?**|Overtime hours were compared with contracted hours to<br>calculate overtime percentages by organisation and<br>department. Departments were also ranked within each<br>organisation, allowing like-for-like prioritisation within each<br>trust.|Prioritise reviews of staffing cover,<br>workload and rota arrangements in<br>areas with relatively high overtime<br>reliance.|
-||The analysis brings together distinct leaver counts,|Support retention reviews and longer-|
-|**What do leaver and workforce**<br>**age patterns indicate?**|headcount snapshots, estimated attrition percentages and<br>age-band distributions. This provides separate views of<br>recorded staff departures and workforce age composition.<br>i  f|term succession planning, while<br>investigating underlying causes before<br>drawing conclusions.|
-|**How does workforce**<br>**composition differ across**<br>**groups?**|Gender, ethnicity, disability, qualification and staff-group<br>breakdowns describe workforce representation and show<br>how the mix varies across reporting categories and<br>organisations.|Inform workforce equality monitoring<br>and identify differences that merit<br>further investigation or more detailed<br>analysis.|
-|**How do pay and capacity**<br>**profiles vary between**<br>**organisations?**|Average annual salary by trust is presented alongside<br>workforce and demographic measures, enabling<br>comparisons of reported pay levels and workforce<br>composition. These figures are descriptive and do not cover<br>role orgrade mix.|Guide questions about workforce mix<br>and pay distribution, and identify where<br>including the grade mix would be useful<br>before making decisions.|
+## 10 | Skills demonstrated
 
+* **SQL:** SQL analysis and data preparation • Fact and dimension modelling • Workforce segmentation • CTEs (Common Table Expressions) and SQL window functions • Distinct headcount and event count
+* **Power BI:** Power BI report design • KPI definition • Time-series analysis • Workforce segmentation • DAX-based measures • Interactive filtering • NHS workforce terminology and standards • Quality assurance and data interpretation • Insight communication
 
+### Reference standards and project materials
 
-**Conclusion:** Overall, the analysis provides a consistent way to explore workforce questions using the same underlying reporting model. It supports investigation and management discussion; it does not, on its own, establish the causes of absence, overtime or staff departures. 
-
-## **9 | Data quality assurance and validation tests** 
-
-The SQL script contains schema inspection, completeness and duplicate-record queries. 
-
-|**Test**|**Method and link to the SQL file**|
-|---|---|
-|**Schema and field metadata**|Used  INFORMATION_SCHEMA.COLUMNS for<br>table names, columns, types and nullability.|
-|**Employee table completeness**|Used COUNT(*), COUNT (DISTINCT<br>employee_key) and SUM(CASE WHEN field IS<br>NULL THEN 1 ELSE 0 END) for identifiers, date<br>of birth, gender and ethnicity.|
-|**Cross-table missing values**|Used CTE to combine dim_employee and<br>fact_workforce counts with UNION ALL.|
-|**Workforce row duplication**|GROUP BY employee_key HAVING COUNT(*) ><br>1 in fact_workforce.|
-|**Unique absence events and leavers**|Use COUNT(DISTINCT absence_id) for events<br>and COUNT(DISTINCT employee_key) for<br>leavers.|
-|**Reporting period and calculation safety**|Use >= '2024-04-01' AND < '2025-04-01' and<br>NULLIF(denominator,0) for rates.|
-
-
-
-#### **Example SQL check included in the project:** 
-
-SELECT employee_key, COUNT(*) AS workforce_rows FROM fact_workforce GROUP BY employee_key HAVING COUNT(*) > 1; 
-
-SELECT COUNT(*) AS total_records, COUNT(DISTINCT employee_key) AS unique_employees, SUM(CASE WHEN employee_key IS NULL THEN 1 ELSE 0 END) AS missing_employee_key, SUM(CASE WHEN date_of_birth IS NULL THEN 1 ELSE 0 END) AS missing_dob, SUM(CASE WHEN gender IS NULL 
-
-Healthcare workforce intelligence | Project portfolio 
-
-THEN 1 ELSE 0 END) AS missing_gender, SUM(CASE WHEN ethnic_category IS NULL THEN 1 ELSE 0 END) AS missing_ethnicity FROM dim_employee; 
-
-## **10 | Skills demonstrated** 
-
-**SQL:** SQL analysis and data preparation • Fact and dimension modelling • Workforce segmentation • CTEs (Common Table Expressions) and SQL window functions • Distinct headcount and event count 
-
-**Power BI:** Power BI report design • KPI definition • Time-series analysis • Workforce segmentation • DAX-based measures •Interactive filtering • NHS workforce terminology and standards • Quality assurance and data interpretation • Insight communication 
-
-## **Reference standards and project materials** 
-
-**Project file** : Health WorkForce 2.0.sql; Health Care 2.1.pbix. 
-
-**NHS National Workforce Data Set (NWD)** : https://standards.nhs.uk/published-standards/national-workforce-data-set 
-
-**NHS sickness absence rates methodology:** <u>https://digital.nhs.uk/data-and-information/publications/statistical/nhs-sicknessabsence-rates/june-2026/methodology</u> 
-
-**NHS Data Model and Dictionary** : https://www.datadictionary.nhs.uk/ 
-
-Healthcare workforce intelligence | Project portfolio 
-
+* **Project file:** `Health WorkForce 2.0.sql`; `Health Care 2.1.pbix`.
+* **NHS National Workforce Data Set (NWD):** https://standards.nhs.uk/published-standards/national-workforce-data-set
+* **NHS sickness absence rates methodology:** https://digital.nhs.uk/data-and-information/publications/statistical/nhs-sickness-absence-rates/june-2026/methodology
+* **NHS Data Model and Dictionary:** https://www.datadictionary.nhs.uk/
